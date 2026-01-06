@@ -189,48 +189,69 @@ const BuilderContent: React.FC = () => {
       </div>
 
       {/* Mobile Preview Modal */}
-      <AnimatePresence>
-        {showPreview && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-foreground/20 backdrop-blur-sm z-50 xl:hidden"
-              onClick={() => setShowPreview(false)}
-            />
-            <motion.div
-              initial={{ opacity: 0, y: '100%' }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: '100%' }}
-              className="fixed inset-x-0 bottom-0 top-16 bg-card border-t border-border rounded-t-2xl z-50 xl:hidden overflow-hidden flex flex-col"
-            >
-              <div className="p-4 border-b border-border flex items-center justify-between">
-                <h3 className="font-display font-semibold">Preview & Export</h3>
-                <Button variant="ghost" size="sm" onClick={() => setShowPreview(false)}>Close</Button>
+      {/* Preview Modal (Mobile + Desktop) */}
+<AnimatePresence>
+  {showPreview && (
+    <>
+      {/* Overlay */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-foreground/30 backdrop-blur-sm z-50"
+        onClick={() => setShowPreview(false)}
+      />
+
+      {/* Modal */}
+      <motion.div
+        initial={{ opacity: 0, y: 40, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 40, scale: 0.95 }}
+        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      >
+        <div
+          className="bg-card border border-border rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="p-4 border-b border-border flex items-center justify-between">
+            <h3 className="font-display font-semibold">Preview & Export</h3>
+            <Button variant="ghost" size="sm" onClick={() => setShowPreview(false)}>
+              Close
+            </Button>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button className="gradient-primary w-full" onClick={handleDownloadPDF}>
+                <Download className="w-4 h-4 mr-2" />
+                Download Resume PDF
+              </Button>
+              <Button variant="outline" className="w-full" onClick={handleDownloadPortfolio}>
+                <Globe className="w-4 h-4 mr-2" />
+                Download Portfolio Website
+              </Button>
+            </div>
+
+            <ResumeSettings />
+
+            <div className="flex justify-center">
+              <div id="resume-preview-modal" className="scale-[0.85] origin-top">
+                <ResumePreview
+                  data={resumeData}
+                  settings={resumeSettings}
+                  className="w-[210mm]"
+                />
               </div>
-              <div className="flex-1 overflow-y-auto p-4">
-                <div className="space-y-4 mb-4">
-                  <Button className="w-full gradient-primary" onClick={handleDownloadPDF}>
-                    <Download className="w-4 h-4 mr-2" />
-                    Download Resume PDF
-                  </Button>
-                  <Button variant="outline" className="w-full" onClick={handleDownloadPortfolio}>
-                    <Globe className="w-4 h-4 mr-2" />
-                    Download Portfolio Website
-                  </Button>
-                </div>
-                <ResumeSettings />
-                <div className="mt-4 transform scale-50 origin-top">
-                  <div id="resume-preview-mobile">
-                    <ResumePreview data={resumeData} settings={resumeSettings} />
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </>
+  )}
+</AnimatePresence>
+
 
       <FeedbackModal isOpen={showFeedback} onClose={() => setShowFeedback(false)} />
     </div>
